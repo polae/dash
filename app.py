@@ -5,6 +5,10 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
 
+from PIL import Image
+
+logo = Image.open("assets/polae_logo_text_label_white_256.png")
+
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 
 server = app.server
@@ -12,9 +16,18 @@ server = app.server
 
 app.layout = dbc.Container([
   dbc.Row([
-    dbc.Col([html.H1("HEADER")])
+    dbc.Col([html.H1("HEADER", className="text-primary")])
   ]),
-  dbc.Row([html.H2("Text")])
+  dbc.Row([
+    html.H2("Text"),
+    html.Img(src=logo, className="m-5", style={'height':'128px', 'width':'64px'}),
+    dbc.Button(
+            "ENTER",
+            id="enter-button",
+            className="mb-3",
+            color="primary",
+            n_clicks=0,
+        )])
 ])
 
 
