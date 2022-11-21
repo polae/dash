@@ -20,7 +20,7 @@ app.layout = dbc.Container([
   ]),
   dbc.Row([
     html.H2("Text"),
-    html.Img(src=logo, className="m-5", style={'height':'128px', 'width':'64px'}),
+    html.Img(src=logo, className="m-5", style={'height':'48px', 'width':'96px'}),
     dbc.Button(
             "ENTER",
             id="enter-button",
