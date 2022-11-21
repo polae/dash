@@ -14,7 +14,7 @@ app.layout = dbc.Container([
   dbc.Row([
     dbc.Col([html.H1("HEADER")])
   ]),
-  dbc.Row([html.H2("header")])
+  dbc.Row([html.H2("Text")])
 ])
 
 
