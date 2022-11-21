@@ -7,6 +7,8 @@ import pandas as pd
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 
+server = app.server
+
 
 app.layout = dbc.Container([
   dbc.Row([
