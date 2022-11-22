@@ -1,0 +1,53 @@
+Adding example.com to ⬢ polaeio-test... done
+ ›   Error: Please verify your account in order to add domains
+ ›    (please enter a credit card) For more information, see 
+ ›   https://devcenter.heroku.com/categories/billing Verify 
+ ›   now at https://heroku.com/verify 
+ ›
+ ›   Error ID: verification_required
+(.venv) Johns-MacBook-Pro:dash johnsteven$ heroku domains:add polae.io
+Adding polae.io to ⬢ polaeio-test... done
+ ›   Error: Please verify your account in order to add domains
+ ›    (please enter a credit card) For more information, see 
+ ›   https://devcenter.heroku.com/categories/billing Verify 
+ ›   now at https://heroku.com/verify 
+ ›
+ ›   Error ID: verification_required
+(.venv) Johns-MacBook-Pro:dash johnsteven$ heroku domains:add polae.io
+Configure your app's DNS provider to point to the DNS Target sleepy-soybean-k3nvhr9ogesmyes52cvf2d62.herokudns.com.
+    For help, see https://devcenter.heroku.com/articles/custom-domains
+
+The domain polae.io has been enqueued for addition
+Run heroku domains:wait 'polae.io' to wait for completion
+Adding polae.io to ⬢ polaeio-test... done
+(.venv) Johns-MacBook-Pro:dash johnsteven$ heroku domains:add www.polae.io
+Configure your app's DNS provider to point to the DNS Target current-zebra-wywjpgva6jhh1n3wcde56fi7.herokudns.com.
+    For help, see https://devcenter.heroku.com/articles/custom-domains
+
+The domain www.polae.io has been enqueued for addition
+Run heroku domains:wait 'www.polae.io' to wait for completion
+Adding www.polae.io to ⬢ polaeio-test... done
+(.venv) Johns-MacBook-Pro:dash johnsteven$ heroku certs:auto:enable
+Enabling Automatic Certificate Management... !
+ ▸    Hobby or above tier required for ACM
+(.venv) Johns-MacBook-Pro:dash johnsteven$ heroku dyno:resize hobby
+Scaling dynos on ⬢ polaeio-test... done
+=== Dyno Types
+type  size   qty  cost/mo
+────  ─────  ───  ───────
+web   Hobby  1    $7
+=== Dyno Totals
+type   total
+─────  ─────
+Hobby  1
+(.venv) Johns-MacBook-Pro:dash johnsteven$ heroku certs:auto:enable
+Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
+=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.
+(.venv) Johns-MacBook-Pro:dash johnsteven$ heroku domains
+=== polaeio-test Heroku Domain
+polaeio-test.herokuapp.com
+
+=== polaeio-test Custom Domains
+Domain Name  DNS Record Type DNS Target                                            SNI Endpoint 
+polae.io     ALIAS or ANAME  sleepy-soybean-k3nvhr9ogesmyes52cvf2d62.herokudns.com undefined    
+www.polae.io CNAME           current-zebra-wywjpgva6jhh1n3wcde56fi7.herokudns.com  undefined
