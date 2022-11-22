@@ -43,10 +43,10 @@ app.layout = dbc.Container([
     dbc.Col(html.Img(src=logo, className="mt-4", style={'height':'48px', 'width':'96px'}), width=3)
   ]),
   dbc.Row([
-    html.Img(src=hero, className="rounded mx-auto d-block", style={'height':'640px', 'width':'640px'})
+    html.Img(src=hero, className="rounded mx-auto d-block", style={'height':'768px', 'width':'768px'})
   ]),
   dbc.Row([
-    dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=3),
+    dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
     dbc.Col([
       html.P('''
       You are waking up. 
@@ -101,13 +101,15 @@ app.layout = dbc.Container([
       ),
       
       
-      ], className="mt-5", width=6),
-  dbc.Row(
-      dcc.Graph(figure=fig)
-      ), 
-  dbc.Row(
-      dcc.Graph(figure=fig3d)
-      )
+      ], className="mt-5", width=10),
+  dbc.Row([
+    dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
+    dbc.Col(dcc.Graph(figure=fig), width=10)
+  ]), 
+  dbc.Row([
+    dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
+    dbc.Col(dcc.Graph(figure=fig3d), width=10)
+  ]), 
 
   ])
 ])
@@ -115,3 +117,4 @@ app.layout = dbc.Container([
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+    #port=3000,
