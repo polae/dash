@@ -4,11 +4,9 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
-from dash_bootstrap_templates import load_figure_template
 
 vdf = pd.read_json('assets/data/vdf.json')
 
-template = load_figure_template('solar')
 
 from PIL import Image
 logo = Image.open("assets/img/polae_logo_text_label_white_256.png")
@@ -21,22 +19,6 @@ text = '''
 '''
 
 server = app.server
-
-fig = px.scatter(vdf, 
-        x="plotA", 
-        y="plotB",
-        size ="scale",
-        template=template,
-      )
-
-fig3d = px.scatter_3d(vdf, 
-        x=vdf.plotX,
-        y=vdf.plotY,
-        z=vdf.plotZ,
-        size=vdf.scale,
-        template=template,
-        color='classification')
-
 
 app.layout = dbc.Container([
   dbc.Row([
@@ -100,14 +82,8 @@ app.layout = dbc.Container([
       '''
       ),
       
-      
       ], className="mt-5", width=6),
-  dbc.Row(
-      dcc.Graph(figure=fig)
-      ), 
-  dbc.Row(
-      dcc.Graph(figure=fig3d)
-      )
+    # dbc.Col(html.Img(src=logo, className="mt-4", style={'height':'64px', 'width':'128px'}), width=3)
 
   ])
 ])
