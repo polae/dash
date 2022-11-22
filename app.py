@@ -1,25 +1,26 @@
 import dash
 from dash import html, dcc, Dash
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 import pandas as pd
+from PIL import Image
 from dash_bootstrap_templates import load_figure_template
 
+#DATA and SETTINGS
+#data
 vdf = pd.read_json('assets/data/vdf.json')
-
+#styling
 template = load_figure_template('solar')
-
-from PIL import Image
+#images
 logo = Image.open("assets/img/polae_logo_text_label_white_256.png")
 hero = Image.open("assets/img/DALL·E 2022-11-14 20.54.07 - a largecrack appears in the egg shell, with a tiny bird beak poking through.png")
-
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SOLAR])
-
+#text
 text = '''
     Please remain calm. Everyone is safe. It is important to know and remember that everyone is safe. We were able to save everyone. In some time, you will be reunited with your loved ones.
 '''
 
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SOLAR])
 server = app.server
 
 fig = px.scatter(vdf, 
@@ -37,13 +38,28 @@ fig3d = px.scatter_3d(vdf,
         template=template,
         color='classification')
 
-
 app.layout = dbc.Container([
   dbc.Row([
     dbc.Col(html.Img(src=logo, className="mt-4", style={'height':'48px', 'width':'96px'}), width=3)
   ]),
   dbc.Row([
     html.Img(src=hero, className="rounded mx-auto d-block", style={'height':'768px', 'width':'768px'})
+  ]),
+  dbc.Row([
+    dbc.Button(
+      "More",
+      id="collapse-button",
+      className="m-3 col-2 mx-auto",
+      outline=True,
+      size="lg",
+      color="primary",
+      n_clicks=0,
+    ),
+    dbc.Collapse(
+        dbc.Card(dbc.CardBody("This content is hidden in the collapse")),
+        id="collapse",
+        is_open=False,
+    ),
   ]),
   dbc.Row([
     dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
@@ -99,8 +115,7 @@ app.layout = dbc.Container([
         We have calculated that the time required to push Earth closer to the Sun; recreate its atmosphere; terrain; cites; towns; dwellings; infrastructure will take nearly ten thousand years. We are confident - barring another unforeseen event - that we should be able to keep you exactly as you are: safe as a digital consciousness until such time that we can safely locate and reanimate our bodies.  Time works differently now.
       '''
       ),
-      
-      
+       
       ], className="mt-5", width=10),
   dbc.Row([
     dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
@@ -115,6 +130,16 @@ app.layout = dbc.Container([
 ])
 
 
+@app.callback(
+    Output("collapse", "is_open"),
+    [Input("collapse-button", "n_clicks")],
+    [State("collapse", "is_open")],
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+#main
 if __name__ == '__main__':
     app.run_server(debug=True)
     #port=3000,
