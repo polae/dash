@@ -7,6 +7,7 @@ import pandas as pd
 from PIL import Image
 from dash_bootstrap_templates import load_figure_template
 import json
+import statsmodels
 
 #DATA
 
@@ -28,16 +29,42 @@ fig = px.scatter(vdf,
         size ="scale",
         title="Cooperative or competitive?",
         template=template,
+        hover_data={'classification':True,
+            'plotA': False,
+            'plotB': False,
+            'scale': False
+            },
+        labels = {
+            'plotA': 'LOOK',
+            'plotB': 'AROUND'
+            },
+        trendline='ols'
       )
 
-fig3d = px.scatter_3d(vdf, 
+fig3d = px.scatter_3d(vdf,
+        title= "Semantic Nearness",
         x=vdf.plotX,
         y=vdf.plotY,
         z=vdf.plotZ,
         size=vdf.scale,
+        hover_data={'classification':True,
+                    'plotX': False,
+                    'plotY': False,
+                    'plotZ': False,
+                    'scale': False
+                    },
+        labels = {
+                  'plotX': 'LOOK',
+                  'plotY': 'AROUND',
+                  'plotZ': 'YOU'
+                  },
         template=template,
-        color='classification'
+        color='classification',
+        #width=768,
+        #height=768,
+        color_continuous_scale=['Gold', 'Indigo']
         )
+fig3d.update_layout(transition_easing="bounce-in-out")
 
 #LAYOUT
 app.layout = dbc.Container([
@@ -156,7 +183,7 @@ app.layout = dbc.Container([
   ]), 
   dbc.Row([
     dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
-    dbc.Col(dcc.Graph(figure=fig3d), width=10)
+    dbc.Col(dcc.Graph(figure=fig3d), className="mt-5", width=10)
   ]),
   dbc.Row([
     dbc.Col(html.H3('', className="mt-5 text-center"), width=1),
@@ -188,5 +215,5 @@ def toggle_collapse(n, is_open):
 
 #MAIN
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
     #port=3000,
