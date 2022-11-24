@@ -9,6 +9,8 @@ from dash_bootstrap_templates import load_figure_template
 import json
 import statsmodels
 import datetime
+import io
+import base64
 
 #DATA
 
@@ -16,178 +18,106 @@ vdf = pd.read_json('assets/data/vdf.json')
 template = load_figure_template('solar')
 
 logo = Image.open("assets/img/polae_logo_text_label_white_256.png")
-#hero = Image.open("assets/img/DALL·E 2022-11-14 20.54.07 - a largecrack appears in the egg shell, with a tiny bird beak poking through.png")
-text = '''
-    Please remain calm. Everyone is safe. It is important to know and remember that everyone is safe. We were able to save everyone. In some time, you will be reunited with your loved ones.
-'''
+text = ''
+
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SOLAR])
 server = app.server
 
-fig = px.scatter(vdf, 
-        x="plotA", 
-        y="plotB",
-        size ="scale",
-        title="Cooperative or competitive?",
-        template=template,
-        hover_data={'classification':True,
-            'plotA': False,
-            'plotB': False,
-            'scale': False
-            },
-        labels = {
-            'plotA': 'LOOK',
-            'plotB': 'AROUND'
-            },
-        trendline='ols'
-      )
-
-fig3d = px.scatter_3d(vdf,
-        title= "Semantic Nearness",
-        x=vdf.plotX,
-        y=vdf.plotY,
-        z=vdf.plotZ,
-        size=vdf.scale,
-        hover_data={'classification':True,
-                    'plotX': False,
-                    'plotY': False,
-                    'plotZ': False,
-                    'scale': False
-                    },
-        labels = {
-                  'plotX': 'LOOK',
-                  'plotY': 'AROUND',
-                  'plotZ': 'YOU'
-                  },
-        template=template,
-        color='classification',
-        #width=768,
-        #height=768,
-        color_continuous_scale=['Gold', 'Indigo']
-        )
-fig3d.update_layout(transition_easing="bounce-in-out")
+def func_test():
+  return dbc.Row(html.Div(text))
 
 
 #LAYOUT
 app.layout = dbc.Container([
   dbc.Row([
-    dbc.Col(html.Img(src=logo, className="mt-4", style={'height':'48px', 'width':'96px'}), width=3)
+    dbc.Col(html.Img(src=logo, className="mt-4", style={'height':'48px', 'width':'96px'}), width=1),
+    dbc.Col((html.H5("| Lab")), className="mt-4", width=10),
+    dbc.Col((html.P("©Polae LLC")), className="mt-4", width=1)
   ]),
   dbc.Row([
     dbc.Col('', width=3),
     dbc.Col((html.Hr()), className="mt-3", width=6)
   ]),
   dbc.Row([
-    #html.Img(src=hero, className="rounded mx-auto d-block", style={'height':'768px', 'width':'768px'})
-  ]),
-  dbc.Row([
-    dbc.Button(
-      "Instructions ...",
-      id="collapse-button",
-      className="m-3 col-4 mx-auto",
-      outline=True,
-      size="md",
-      color="primary",
-      n_clicks=0,
-    ),
-    dbc.Collapse(
-        dbc.Row([
-          dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
-          dbc.Col([
-            html.H4('''
-            Type a response to the following 
-            '''
-            ),
-            
-            html.P('''
-              Now, you are a digital consciousness. This will feel familiar to you, but you are just waking up. 
-            '''
-            )        
-            ], className="mt-5", width=10)
-        ]),
-        id="collapse",
-        is_open=False,
-    ),
-  ]),
-  dbc.Row([ 
-    dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
-    dbc.Col(
-      dbc.Card(
-        dbc.CardBody('Answer:', id='click-data', className="mt-3")
-        ),
-      className="mt-5", width=10)
-
-  ]), 
-  dbc.Row([
-    dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
-    dbc.Col(dcc.Graph(figure=fig3d), className="mt-5", width=10)
-  ]),
-  dbc.Row([
-    dbc.Col(html.H3('', className="mt-5 text-center"), width=1),
-    dbc.Col(
       dcc.Upload(
-          id='upload-image',
-          children=html.Div([
-              'Drag and Drop or ',
-              html.A('Select Files')
-          ]),
-          style={
-              'width': '100%',
-              'height': '60px',
-              'lineHeight': '60px',
-              'borderWidth': '1px',
-              'borderStyle': 'dashed',
-              'borderRadius': '5px',
-              'textAlign': 'center',
-              'margin': '10px'
-          },
-          # Allow multiple files to be uploaded
-          multiple=False
-      )
-    )
+        id='upload-image',
+        children=html.Div([
+            'Drag and Drop or ',
+            html.A('Select Files')
+        ]),
+        style={
+            'width': '100%',
+            'height': '60px',
+            'lineHeight': '60px',
+            'borderWidth': '1px',
+            'borderStyle': 'dashed',
+            'borderRadius': '5px',
+            'textAlign': 'center',
+            'margin': '10px'
+        },
+        # Allow multiple files to be uploaded
+        multiple=True
+    ),
+    html.Div(id='output-image-upload'),
   ]),
-  dbc.Row(
-    html.Div(id='output-image-upload')
-  ),
-]),   
+  dbc.Row([
+    dcc.Textarea(
+    id='textarea-example',
+    value='Textarea content initialized\nwith multiple lines of text',
+    style={'background-color': 'light-blue', 'width': '100%', 'height': 300}, 
+    className="m-3"),
 
+    html.Div(id='textarea-example-output', style={'whiteSpace': 'pre-line'}, 
+    className="mt-3"),
+    html.Div([
+        dbc.Button(
+            "SUBMIT", id="example-button", className="me-2", n_clicks=0
+        ),
+        html.Span(id="example-output", style={"verticalAlign": "middle"}),
+    ]),
+
+    func_test(),
+    # html.Div(text)
+    ], className="m-5"),
+
+
+])
 
 
 @app.callback(
-    Output('click-data', 'children'),
-    Input('basic-interactions', 'clickData'))
-def display_click_data(clickData):
-    clicked = list()
-    clicked = clickData
-    idx = int(clicked['points'][0]['pointIndex'])
-    return_string = vdf.iloc[idx]['completion']
-    return return_string
-
-@app.callback(
-    Output("collapse", "is_open"),
-    [Input("collapse-button", "n_clicks")],
-    [State("collapse", "is_open")],
+    Output("example-output", "children"), [Input("example-button", "n_clicks")]
 )
-def toggle_collapse(n, is_open):
-    if n:
-        return not is_open
-    return is_open
+def on_button_click(n):
+    if n is None:
+      return "Not clicked."
+    else:
+      return func_test()
+      
 
 def parse_contents(contents, filename, date):
-    return html.Div([
-        html.H5(filename),
-        html.H6(datetime.datetime.fromtimestamp(date)),
+  data = contents.encode("utf8").split(b";base64,")[1]
+  with open(f'assets/img/{filename}', "wb") as fh:
+    fh.write(base64.decodebytes(data))
+  return html.Div([
+      html.H5(filename),
+      html.H6(datetime.datetime.fromtimestamp(date)),
+      html.Img(src=contents),
+      html.Hr(),
+      html.Div('Raw Content'),
+      html.Pre(contents[0:200] + '...', style={
+          'whiteSpace': 'pre-wrap',
+          'wordBreak': 'break-all'
+      })
+  ])
 
-        # HTML images accept base64 encoded strings in the same format
-        # that is supplied by the upload
-        html.Img(src=contents),
-        html.Hr(),
-        html.Div('Raw Content'),
-        html.Pre(contents[0:200] + '...', style={
-            'whiteSpace': 'pre-wrap',
-            'wordBreak': 'break-all'
-        })
-    ])
+@app.callback(
+    Output('textarea-example-output', 'children'),
+    Input('textarea-example', 'value')
+)
+def update_output(value):
+    text=value
+    return 'You have entered: \n{}'.format(value), text
 
 @app.callback(Output('output-image-upload', 'children'),
               Input('upload-image', 'contents'),
@@ -198,9 +128,9 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
         children = [
             parse_contents(c, n, d) for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]
-        return children    
+        return children
 
 #MAIN
 if __name__ == '__main__':
-    app.run_server(debug=True, port=3000)
+    app.run_server(debug=True)
     #port=3000,
