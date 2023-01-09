@@ -6,23 +6,30 @@ import plotly.express as px
 import pandas as pd
 from PIL import Image
 from dash_bootstrap_templates import load_figure_template
-import json
-import statsmodels
 
-#DATA
 
 vdf = pd.read_json('assets/data/vdf.json')
-template = load_figure_template('solar')
+template = load_figure_template('darkly')
 
 logo = Image.open("assets/img/polae_logo_text_label_white_256.png")
 hero = Image.open("assets/img/DALL·E 2022-12-07 21.58.24 - cracked, blackened Earth, smoke, boulders.png")
+video_url = "https://s3.us-west-2.amazonaws.com/polae.io/static/video/CH01_0004.mp4"
+# https://s3.us-west-2.amazonaws.com/polae.io/static/video/CH01_0004.mp4
 text = '''
     Please remain calm. Everyone is safe. It is important to know and remember that everyone is safe. We were able to save everyone. In some time, you will be reunited with your loved ones.
 '''
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SOLAR])
-app.title = "Polæ"
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
+app.title = "RECREATION"
 server = app.server
+
+card = dbc.Card([
+  dbc.CardImg(src="assets/img/DALL·E 2022-12-01 21.54.41 - glossy white panel of lighted buttons and circuits.png", top=True),
+  dbc.CardBody([
+          html.H4("Title"),
+          html.P("Description")
+      ])
+  ])
 
 fig = px.scatter(vdf, 
         x="plotA", 
@@ -67,60 +74,41 @@ fig3d = px.scatter_3d(vdf,
         )
 fig3d.update_layout(transition_easing="bounce-in-out")
 
+
+video = html.Video(src=video_url, autoPlay=False, controls=True, style={'width': '100%', 'height': '100%'})
+
 #LAYOUT
 app.layout = dbc.Container([
-  dbc.Row([
-    dbc.Col(html.Img(src=logo, className="mt-4", style={'height':'48px', 'width':'96px'}), width=3)
-  ]),
-  dbc.Row([
-    dbc.Col('', width=3),
-    dbc.Col((html.Hr()), className="mt-3", width=6)
-  ]),
-  dbc.Row([
-    dbc.Col('', width=3),
-    dbc.Col((html.Hr()), className="mt-3", width=6)
-  ]),
-  dbc.Row([
-    dbc.Col('', width=1),
-    dbc.Col((html.Img(src=hero, className="rounded mx-auto d-block", style={'height':'512px', 'width':'1024px'})), className="mt-3", width=10)
-  ]),
-  # dbc.Row([
-  #   dbc.Col(html.H3('', className="mt-5 text-center"), width=1),
-  #   dbc.Col(
-  #     dbc.Carousel(
-  #       items=[
-  #           {
-  #               "key": "1",
-  #               "src": "assets/img/DALL·E 2022-05-17 18.48.40.png",
-  #               "header": "Header ",
-  #               "caption": "You are waking up.",
-  #           },
-  #           {
-  #               "key": "2",
-  #               "src": "assets/img/DALL·E 2022-05-17 18.58.12.png",
-  #               "header": "AI02y",
-  #               "caption": "You are waking up",
-  #           },
-  #       ],
-  #       variant="dark",
-  #       className="carousel-fade",
-  #     ), width=10)
+    
+    html.Div(video, style={'position': 'relative', 'height': 'calc(100vh - 80px)'}),
 
-  #   ]),
-  
+  dbc.Row([
+    dbc.Col('', width=3),
+    dbc.Col(html.Img(src=logo, className="mt-4", style={'height':'48px', 'width':'96px'}), className="text-center", width=6)
+  ]),
+  dbc.Row([
+    dbc.Col('', width=3),
+    dbc.Col((html.Hr()), className="mt-3", width=6)
+  ]),
+  dbc.Row([
+        dbc.Col(html.P('', className="mt-5 text-center"), width=3),
+        dbc.Col([card]), dbc.Col([card]), dbc.Col([card]), 
+        dbc.Col(html.P('', className="mt-5 text-center"), width=3),
+
+  ]),
   dbc.Row([
     dbc.Button(
-      "You are waking up ...",
+      "We are a collective consciousness",
       id="collapse-button",
       className="m-3 col-4 mx-auto",
       outline=True,
       size="md",
-      color="primary",
+      color="warning",
       n_clicks=0,
     ),
     dbc.Collapse(
         dbc.Row([
-          dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=1),
+          dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=4),
           dbc.Col([
             html.H4('''
             You are waking up. 
@@ -188,7 +176,7 @@ app.layout = dbc.Container([
               html.Li('Should we reanimate ourselves to occupy a single human body, or should we trend to a collective intelligence where we can occupy many perspectives and locations?'),
            ]),
             
-            ], className="mt-5", width=10)
+            ], className="mt-5", width=4)
         ]),
         id="collapse",
         is_open=False,
@@ -218,12 +206,14 @@ app.layout = dbc.Container([
   dbc.Row([
     dbc.Col(html.H3('', className="mt-5 text-center"), width=1),
     dbc.Col()
-  ]),  
-])
+  ]), 
+  
+], style={"backgroundColor": "black"},fluid=True)
 
 @app.callback(
     Output('click-data', 'children'),
     Input('basic-interactions', 'clickData'))
+
 def display_click_data(clickData):
     clicked = list()
     clicked = clickData

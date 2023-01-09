@@ -84,9 +84,9 @@ app.layout = dbc.Container([
 
 ])
 
-
 @app.callback(
-    Output("example-output", "children"), [Input("example-button", "n_clicks")]
+    Output("example-output", "children"), 
+    [Input("example-button", "n_clicks")]
 )
 def on_button_click(n):
     if n is None:
