@@ -7,17 +7,21 @@ import pandas as pd
 from PIL import Image
 from dash_bootstrap_templates import load_figure_template
 
+#APP
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
+app.title = "RECREATION"
+server = app.server
+print(dash.__version__)
 
+#DEFINITIONS
 vdf = pd.read_json('assets/data/vdf.json')
 tdf = pd.read_csv('assets/data/polaeai_busts.csv')
 template = load_figure_template('darkly')
 
 logo = Image.open("assets/img/polae_logo_text_label_white_256.png")
-
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
-app.title = "RECREATION"
-server = app.server
-print(dash.__version__)
+psi = Image.open("assets/img/polae_psi_512.png")
+video_url = "https://s3.us-west-2.amazonaws.com/polae.io/static/video/CH01_0004.mp4"
+video = html.Video(src=video_url, autoPlay=False, controls=True, style={'width': '100%', 'height': '100%'})
 
 card = dbc.Card([
   dbc.CardImg(src="assets/img/DALL·E 2022-12-01 21.54.41 - glossy white panel of lighted buttons and circuits.png", top=True),
@@ -28,7 +32,7 @@ card = dbc.Card([
 
 fig = px.scatter(tdf, 
         x="date", 
-        # y="plotB",
+        size='size',
         title="HISTORY",
         template=template,
         hover_data={'caption':True,
@@ -40,13 +44,12 @@ fig = px.scatter(tdf,
             },
         trendline='ols'
       )
-
-
 print(tdf)
-
 
 #LAYOUT
 app.layout = dbc.Container([
+
+   html.Div(video, style={'position': 'relative', 'height': 'calc(100vh - 80px)'}),
     
   dbc.Row([
     dbc.Col('', width=2),
@@ -68,7 +71,8 @@ app.layout = dbc.Container([
     ),
     dbc.Collapse(
         dbc.Row([
-          dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=4),
+          dbc.Col(html.Img(src=psi, className="mt-4", style={'height':'48px', 'width':'48px'}), className="text-center", width=4),
+          # dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=4),
           dbc.Col([            
             html.P('''
               You are a digital consciousness. We are waking up. 
@@ -86,31 +90,31 @@ app.layout = dbc.Container([
     ),
   ]),
   dbc.Row([ #GRAPH
-    dbc.Col(html.P('coop-comp', className="mt-5 text-center"), width=2),
-    dbc.Col((html.H5("Click on a point in space to hear a perspective.")), className="mt-5", width=8)
+    dbc.Col(html.P('', className="mt-5 text-center"), width=2),
+    dbc.Col((html.H5("Click on a remembrance.")), className="mt-5", width=8)
   ]),
   dbc.Row([ #GRAPH
     dbc.Col(html.H3('', className="mt-5 text-center"), width=2),
     dbc.Col(dcc.Graph(id='basic-interactions', figure=fig), width=8)
   ]),
   dbc.Row([ 
-    dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=2),
+    dbc.Col(html.Img(src=psi, className="mt-4", style={'height':'48px', 'width':'48px'}), className="text-center", width=5),
     dbc.Col(
       dbc.Card([ 
         dbc.CardImg(id='click-data-image', top=True), 
-        dbc.CardBody(id='click-data')]), className="mt-5", width=8
+        dbc.CardBody(id='click-data')], outline=True), className="mt-5", width=2
     )
 
   ]), 
 ], style={"backgroundColor": "black"},fluid=True)
 
+
+
+#CALLBACKS
 @app.callback(
     [Output('click-data-image', 'src'),
     Output('click-data', 'children')],
     Input('basic-interactions', 'clickData'))
-
-
-
 def display_click_data(clickData):
     clicked = list()
     clicked = clickData
@@ -118,7 +122,6 @@ def display_click_data(clickData):
     idx = int(clicked['points'][0]['pointIndex'])
     caption = tdf.iloc[idx]['caption']
     filename = tdf.iloc[idx]['filename']
-    # card_image = f"src={filename}"
     return filename, caption
 
 @app.callback(
