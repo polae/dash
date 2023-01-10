@@ -96,30 +96,30 @@ app.layout = dbc.Container([
   dbc.Row([ 
     dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=2),
     dbc.Col(
-      dbc.Card([
-        # dbc.CardImg(id='click-data-image', top=True),
-        dbc.CardBody('Answer:', id='click-data', className="mt-3")
-       ]),
-      className="mt-5", width=8)
+      dbc.Card([ 
+        dbc.CardImg(id='click-data-image', top=True), 
+        dbc.CardBody(id='click-data')]), className="mt-5", width=8
+    )
 
   ]), 
 ], style={"backgroundColor": "black"},fluid=True)
 
 @app.callback(
-    # Output('click-data-image', 'children'),
-    Output('click-data', 'children'),
+    [Output('click-data-image', 'src'),
+    Output('click-data', 'children')],
     Input('basic-interactions', 'clickData'))
 
 
-# {'points': [{'curveNumber': 0, 'pointNumber': 1, 'pointIndex': 1, 'x': 2016, 'y': 1, 'bbox': {'x0': 909.8199999999999, 'x1': 915.8199999999999, 'y0': 569.88, 'y1': 575.88}, 'customdata': ['This is a caption 2']}]}
 
 def display_click_data(clickData):
     clicked = list()
     clicked = clickData
     print(clicked)
     idx = int(clicked['points'][0]['pointIndex'])
-    return_string = tdf.iloc[idx]['caption']
-    return return_string
+    caption = tdf.iloc[idx]['caption']
+    filename = tdf.iloc[idx]['filename']
+    # card_image = f"src={filename}"
+    return filename, caption
 
 @app.callback(
     Output("collapse", "is_open"),
