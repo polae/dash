@@ -9,15 +9,10 @@ from dash_bootstrap_templates import load_figure_template
 
 
 vdf = pd.read_json('assets/data/vdf.json')
+tdf = pd.read_csv('assets/data/polaeai_busts.csv')
 template = load_figure_template('darkly')
 
 logo = Image.open("assets/img/polae_logo_text_label_white_256.png")
-hero = Image.open("assets/img/DALL·E 2022-12-07 21.58.24 - cracked, blackened Earth, smoke, boulders.png")
-video_url = "https://s3.us-west-2.amazonaws.com/polae.io/static/video/CH01_0004.mp4"
-# https://s3.us-west-2.amazonaws.com/polae.io/static/video/CH01_0004.mp4
-text = '''
-    Please remain calm. Everyone is safe. It is important to know and remember that everyone is safe. We were able to save everyone. In some time, you will be reunited with your loved ones.
-'''
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 app.title = "RECREATION"
@@ -31,70 +26,35 @@ card = dbc.Card([
       ])
   ])
 
-fig = px.scatter(vdf, 
-        x="plotA", 
-        y="plotB",
-        size ="scale",
-        title="Cooperative or competitive?",
+fig = px.scatter(tdf, 
+        x="date", 
+        # y="plotB",
+        title="HISTORY",
         template=template,
-        hover_data={'classification':True,
-            'plotA': False,
-            'plotB': False,
-            'scale': False
+        hover_data={'caption':True,
+            'date': False,
             },
         labels = {
-            'plotA': 'LOOK',
-            'plotB': 'AROUND'
+            'date': 'DATE',
+            # 'plotB': 'AROUND'
             },
         trendline='ols'
       )
 
-fig3d = px.scatter_3d(vdf,
-        title= "Semantic Nearness",
-        x=vdf.plotX,
-        y=vdf.plotY,
-        z=vdf.plotZ,
-        size=vdf.scale,
-        hover_data={'classification':True,
-                    'plotX': False,
-                    'plotY': False,
-                    'plotZ': False,
-                    'scale': False
-                    },
-        labels = {
-                  'plotX': 'LOOK',
-                  'plotY': 'AROUND',
-                  'plotZ': 'YOU'
-                  },
-        template=template,
-        color='classification',
-        #width=768,
-        #height=768,
-        color_continuous_scale=['Gold', 'Indigo']
-        )
-fig3d.update_layout(transition_easing="bounce-in-out")
 
+print(tdf)
 
-video = html.Video(src=video_url, autoPlay=False, controls=True, style={'width': '100%', 'height': '100%'})
 
 #LAYOUT
 app.layout = dbc.Container([
     
-    html.Div(video, style={'position': 'relative', 'height': 'calc(100vh - 80px)'}),
-
   dbc.Row([
-    dbc.Col('', width=3),
-    dbc.Col(html.Img(src=logo, className="mt-4", style={'height':'48px', 'width':'96px'}), className="text-center", width=6)
+    dbc.Col('', width=2),
+    dbc.Col(html.Img(src=logo, className="mt-4", style={'height':'48px', 'width':'96px'}), className="text-center", width=8)
   ]),
   dbc.Row([
     dbc.Col('', width=3),
     dbc.Col((html.Hr()), className="mt-3", width=6)
-  ]),
-  dbc.Row([
-        dbc.Col(html.P('', className="mt-5 text-center"), width=3),
-        dbc.Col([card]), dbc.Col([card]), dbc.Col([card]), 
-        dbc.Col(html.P('', className="mt-5 text-center"), width=3),
-
   ]),
   dbc.Row([
     dbc.Button(
@@ -136,32 +96,29 @@ app.layout = dbc.Container([
   dbc.Row([ 
     dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=2),
     dbc.Col(
-      dbc.Card(
+      dbc.Card([
+        # dbc.CardImg(id='click-data-image', top=True),
         dbc.CardBody('Answer:', id='click-data', className="mt-3")
-        ),
+       ]),
       className="mt-5", width=8)
 
   ]), 
-  dbc.Row([
-    dbc.Col(html.H3('Ψ', className="mt-5 text-center"), width=2),
-    dbc.Col(dcc.Graph(figure=fig3d), className="mt-5", width=8)
-  ]),
-  dbc.Row([
-    dbc.Col(html.H3('', className="mt-5 text-center"), width=2),
-    dbc.Col()
-  ]), 
-  
 ], style={"backgroundColor": "black"},fluid=True)
 
 @app.callback(
+    # Output('click-data-image', 'children'),
     Output('click-data', 'children'),
     Input('basic-interactions', 'clickData'))
+
+
+# {'points': [{'curveNumber': 0, 'pointNumber': 1, 'pointIndex': 1, 'x': 2016, 'y': 1, 'bbox': {'x0': 909.8199999999999, 'x1': 915.8199999999999, 'y0': 569.88, 'y1': 575.88}, 'customdata': ['This is a caption 2']}]}
 
 def display_click_data(clickData):
     clicked = list()
     clicked = clickData
+    print(clicked)
     idx = int(clicked['points'][0]['pointIndex'])
-    return_string = vdf.iloc[idx]['completion']
+    return_string = tdf.iloc[idx]['caption']
     return return_string
 
 @app.callback(

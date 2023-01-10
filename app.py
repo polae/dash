@@ -19,27 +19,9 @@ app.title = "RECREATION"
 server = app.server
 print(dash.__version__)
 
-video = html.Video(src=video_url, autoPlay=False, controls=True, style={'width': '100%', 'height': '100%'})
-
-card = dbc.Card([
-  dbc.CardImg(src="assets/img/DALL·E 2022-12-01 21.54.41 - glossy white panel of lighted buttons and circuits.png", top=True),
-  # dbc.CardBody([
-  #         html.H4("Title"),
-  #         html.P("Description")
-  #     ])
-  ])
-
 #LAYOUT
 app.layout = dbc.Container([
   
-  dash.page_container,
-
-  dbc.Row([
-        dbc.Col(html.P('', className="mt-5 text-center"), width=3),
-        dbc.Col([card]), dbc.Col([card]), dbc.Col([card]), 
-        dbc.Col(html.P('', className="mt-5 text-center"), width=3),
-
-  ]),
   dbc.Row([
     dbc.Button(
         "We are a collective consciousness",
@@ -62,6 +44,9 @@ app.layout = dbc.Container([
         id="collapse",
         is_open=False,
     ),
+  
+  dash.page_container,
+  
   ]),
 
 
